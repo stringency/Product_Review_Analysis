@@ -16,11 +16,13 @@ import time
 import sys
 
 from PIL import UnidentifiedImageError
+from requests.adapters import HTTPAdapter
+from urllib3.util import create_urllib3_context
 
 from msg_logger.coderec_logger import logger
 
 
-class BarCodeRec:
+class BarCodeRec2:
 
     def __init__(self, shop_id):
         self.shop_id = shop_id
@@ -55,25 +57,29 @@ class BarCodeRec:
 
     # 爬取 "tiaoma.cnaidc.com" 来查找商品信息
     def requestT1(self):
-        url = 'http://tiaoma.cnaidc.com'
+        url = 'https://www.gds.org.cn'
         s = requests.session()
 
         # 获取验证码
-        img_data = s.get(url + '/index/verify.html?time=', headers=self.headers).content
-        time.sleep(2)
-        print(img_data)
-        with open('verification_code.png', 'wb') as v:
-            v.write(img_data)
-
-        # 解验证码
-        ocr = ddddocr.DdddOcr()
-        with open('verification_code.png', 'rb') as f:
-            img_bytes = f.read()
-        code = ocr.classification(img_bytes)
-        logger.info('当前验证码为 ' + code)
+        # img_data = s.get(url + '/index/verify.html?time=', headers=self.headers).content
+        # time.sleep(2)
+        # print(img_data)
+        # try:
+        #     with open('verification_code.png', 'wb') as v:
+        #         v.write(img_data)
+        #
+        #     # 解验证码
+        #     ocr = ddddocr.DdddOcr()
+        #     with open('verification_code.png', 'rb') as f:
+        #         img_bytes = f.read()
+        #     code = ocr.classification(img_bytes)
+        # except UnidentifiedImageError:
+        #     time.sleep(2)
+        #     return self.requestT1()
+        # logger.info('当前验证码为 ' + code)
         # 请求接口参数
-        data = {"code": self.shop_id, "verify": code}
-        resp = s.post(url + '/index/search.html', headers=self.headers, data=data)
+        data = {"type": "barcode", "keyword": self.shop_id}
+        resp = requests.post(url + '/#/barcodeList/index', headers=self.headers, data=data)
         resp_json = self.parse_json(resp.text)
         logger.info(resp_json)
         # 判断是否查询成功

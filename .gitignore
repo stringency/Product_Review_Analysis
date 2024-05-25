@@ -160,6 +160,10 @@ cython_debug/
 .idea/
 
 
-data/
+data/backups/
+data/images/
+data/userinfo/
 models/
 output/
+
+msg_seckill.log
