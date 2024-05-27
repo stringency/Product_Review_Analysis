@@ -61,8 +61,8 @@ print("信息获取结束")
 # 设备检测
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 print(device)
-is_train = False
-if is_train == True:
+is_train = 0
+if is_train == 1:
     # bert模型微调
     bert_tra = BertFinetune(
         scriptDirectory=scriptDirectory,
