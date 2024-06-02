@@ -74,17 +74,16 @@ class ProductReviewAnalysis(QtCore.QThread):
         KEYWORD = dict_info['code_name'] + " " + dict_info['code_spec']
         # 爬取的页数
         cur_page = 1
-
-        selenium_tb_tor = ComInfo(barCode=self.barCode, scriptDirectory=scriptDirectory, KEYWORD=KEYWORD,
+        if option_fun != 2:
+            selenium_tb_tor = ComInfo(barCode=self.barCode, scriptDirectory=scriptDirectory, KEYWORD=KEYWORD,
                                   cur_page=cur_page,
                                   max_page=max_page, index_page_time=index_page_time)
 
-        if option_fun != 2:
             selenium_tb_tor.selenium_tb(option_fun)
         print("信息获取结束")
 
-        # # 评论预测
-        # # 设备检测
+        # 评论预测
+        # 设备检测
         # device = "cuda:0" if torch.cuda.is_available() else "cpu"
         # print(device)
         # if is_train == 1:
@@ -129,33 +128,33 @@ class ProductReviewAnalysis(QtCore.QThread):
         # # bert模型预测
         # bert_pre = BertPredict(
         #     scriptDirectory=scriptDirectory,
-        #     barCode=barCode,
+        #     barCode=self.barCode,
         #     MODEL_PATH="./models/bert/chinese_wwm_pytorch",  # 预训练模型
         #     BEST_MODEL_PATH="./models/bert/finetune/bert_dnn_140.model",  # 微调最佳的模型
-        #     path_comments="./output/" + barCode + "/comments.csv"  # 评论文件位置
+        #     path_comments="./output/" + self.barCode + "/comments.csv"  # 评论文件位置
         # )
         # bert_pre.bert_predicted()
         # print("Bert模型预测结束")
         # # bert转onnx模型预测，并进行预测
         # bert_onnx_pre = BertOnnxPerdict(
         #     scriptDirectory=scriptDirectory,
-        #     barCode=barCode,
+        #     barCode=self.barCode,
         #     MODEL_PATH="./models/bert/chinese_wwm_pytorch",  # 预训练模型
         #     BEST_MODEL_PATH="./models/bert/finetune/bert_dnn_140.model",  # 微调最佳的模型
-        #     path_comments="./output/" + barCode + "/comments.csv",  # 评论文件位置
-        #     path_commentsSentiment=scriptDirectory + "\\output\\" + barCode + "\\commentsSentiment_onnx.csv"
+        #     path_comments="./output/" + self.barCode + "/comments.csv",  # 评论文件位置
+        #     path_commentsSentiment=scriptDirectory + "\\output\\" + self.barCode + "\\commentsSentiment_onnx.csv"
         # )
         #
         # bert_onnx_pre.bert_onnx_predicted()
         # print("Bert模型转onnx模型预测结束")
         # # 评论数据分析
         # commentsAnalysis(scriptDirectory=scriptDirectory,
-        #                  barCode=barCode,
+        #                  barCode=self.barCode,
         #                  path_stopwords=scriptDirectory + "\\data\\analysis\\stopwords.txt",
         #                  # 已经分好类的评论
-        #                  path_commentsSentiment_onnx=scriptDirectory + "\\output\\" + barCode + "\\commentsSentiment_onnx.csv",
+        #                  path_commentsSentiment_onnx=scriptDirectory + "\\output\\" + self.barCode + "\\commentsSentiment_onnx.csv",
         #                  # 生成文件夹,用于存储数据分析的结果文件
-        #                  path_save_commentsAnalysis=scriptDirectory + '\\' + "output" + '\\' + barCode + '\\' + "commentsAnalysis")
+        #                  path_save_commentsAnalysis=scriptDirectory + '\\' + "output" + '\\' + self.barCode + '\\' + "commentsAnalysis")
         #
         # print("评论预测结束")
 
