@@ -9,85 +9,28 @@ from comments_analysis import commentsAnalysis
 from crawlinfo.tb.cominfo import ComInfo
 
 import sys
-from PyQt5 import QtGui
+from PyQt5 import QtGui, QtCore
 from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLineEdit, QPushButton, QVBoxLayout, QWidget, \
     QGridLayout, QLabel, QHBoxLayout
 from PyQt5.QtCore import pyqtSignal, QObject, QUrl
 
 
-# 创建一个自定义信号类，用于在标准输出中显示信息
-class Communicate(QObject):
-    textWritten = pyqtSignal(str)
+class ProductReviewAnalysis(QtCore.QThread):
+    def __init__(self, input_project_path,
+                 input_image_path,
+                 input_craw_page,
+                 input_time,
+                 input_craw_is,
+                 input_bert_is, ):
+        super(ProductReviewAnalysis, self).__init__()
+        self.input_project_path = input_project_path
+        self.input_image_path = input_image_path
+        self.input_craw_page = input_craw_page
+        self.input_time = input_time
+        self.input_craw_is = input_craw_is
+        self.input_bert_is = input_bert_is
 
-
-# 创建主窗口类
-class MainWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("Print Output Example")  # 设置窗口标题
-        self.setGeometry(100, 100, 1000, 600)  # 设置窗口尺寸和位置
-
-        layout = QGridLayout()  # 使用网格布局
-
-        self.input_project_path = QLineEdit("F:\\pythonProject\\Product_Review_Analysis")
-        self.input_project_path.setPlaceholderText("F:\\pythonProject\\Product_Review_Analysis")  # 设置输入框的提示内容
-        layout.addWidget(self.input_project_path)  # 将输入框放置在第二行第一列
-
-        self.input_image_path = QLineEdit("data/images/liushen-6901294179165.jpg")
-        self.input_image_path.setPlaceholderText("data/images/liushen-6901294179165.jpg")  # 设置输入框的提示内容
-        layout.addWidget(self.input_image_path)  # 将输入框放置在第二行第一列
-
-        self.input_craw_page = QLineEdit("5")
-        self.input_craw_page.setPlaceholderText("爬取页数")  # 设置输入框的提示内容
-        layout.addWidget(self.input_craw_page)  # 将输入框放置在第二行第一列
-
-        self.input_time = QLineEdit("3")
-        self.input_time.setPlaceholderText("爬取间隔时间（s）")  # 设置输入框的提示内容
-        layout.addWidget(self.input_time)  # 将输入框放置在第二行第一列
-
-        self.input_craw_is = QLineEdit("2")
-        self.input_craw_is.setPlaceholderText(
-            "爬取信息选项：0:爬取商品信息+评论  1:已有商品信息，只爬取评论  2:不进行数据爬取")  # 设置输入框的提示内容
-        layout.addWidget(self.input_craw_is)  # 将输入框放置在第二行第一列
-
-        self.input_bert_is = QLineEdit("0")
-        self.input_bert_is.setPlaceholderText("模型是否进行训练：1:进行训练  0:不进行训练只检测")  # 设置输入框的提示内容
-        layout.addWidget(self.input_bert_is)  # 将输入框放置在第二行第一列
-
-        self.text_edit = QTextEdit()
-        layout.addWidget(self.text_edit)  # 将文本编辑框放置在第一行，占据1列
-
-        self.button_analysis = QPushButton("开始分析")
-        self.button_analysis.clicked.connect(self.analysis_start)
-        layout.addWidget(self.button_analysis, 10, 0)  # 将按钮放置在第二行第二列
-
-        self.button = QPushButton("查看结果")
-        self.button.clicked.connect(self.watch_input)
-        layout.addWidget(self.button, 10, 1)  # 将按钮放置在第二行第二列
-
-        # 将布局设置为主窗口的中央组件
-        central_widget = QWidget()
-        central_widget.setLayout(layout)
-        self.setCentralWidget(central_widget)
-
-        # 创建自定义信号对象
-        self.communicate = Communicate()
-        # 将自定义信号的文本传递信号连接到显示输出的方法
-        self.communicate.textWritten.connect(self.normal_output_written)
-
-        # 重定向标准输出流到自定义信号对象
-        sys.stdout = EmittingStream(self.communicate)
-
-        # self.scriptDirectory = "F:\\pythonProject\\Product_Review_Analysis"
-        # self.image_path = "data/images/liushen-6901294179165.jpg"
-        # self.max_page = 5
-        # self.index_page_time = 3
-        # self.option_fun = 2  # 0:爬取商品信息+评论  1:已有商品信息，只爬取评论  2:不进行数据爬取
-        # self.is_train = 0
-        self.barCode = None
-
-    # 提交输入的方法
     def analysis_start(self):
         # 项目绝对路径
         scriptDirectory = str(self.input_project_path.text())
@@ -132,7 +75,8 @@ class MainWindow(QMainWindow):
         # 爬取的页数
         cur_page = 1
 
-        selenium_tb_tor = ComInfo(barCode=self.barCode, scriptDirectory=scriptDirectory, KEYWORD=KEYWORD, cur_page=cur_page,
+        selenium_tb_tor = ComInfo(barCode=self.barCode, scriptDirectory=scriptDirectory, KEYWORD=KEYWORD,
+                                  cur_page=cur_page,
                                   max_page=max_page, index_page_time=index_page_time)
 
         if option_fun != 2:
@@ -215,12 +159,111 @@ class MainWindow(QMainWindow):
         #
         # print("评论预测结束")
 
+    def run(self):
+        self.analysis_start()
+
+# 创建一个自定义信号类，用于在标准输出中显示信息
+class Communicate(QObject):
+    textWritten = pyqtSignal(str)
+
+
+# 创建主窗口类
+class MainWindow(QMainWindow):
+    def __init__(self, *args, **kwargs):
+        """
+        构造函数初始化界面及按钮事件连接
+        :param *args: 位置参数，传递给父类构造函数
+        :param **kwargs: 关键字参数，传递给父类构造函数
+        """
+        # 调用父类构造函数，传入任何接收到的位置参数和关键字参数
+        super().__init__(*args, **kwargs)
+        self.setup_ui()
+        self.button_analysis.clicked.connect(self.start_analysis)
+        self.button_output.clicked.connect(self.watch_input)
+        self.button_analysis.setEnabled(True)
+        self.button_output.setEnabled(False)
+
+        # 创建自定义信号对象
+        self.communicate = Communicate()
+        # 将自定义信号的文本传递信号连接到显示输出的方法
+        self.communicate.textWritten.connect(self.normal_output_written)
+
+        # 重定向标准输出流到自定义信号对象
+        sys.stdout = EmittingStream(self.communicate)
+
+    def start_analysis(self):
+        # 禁用启动按钮，启用查看结果按钮
+        self.button_analysis.setDisabled(True)
+        self.button_output.setEnabled(True)
+        self.analysis = ProductReviewAnalysis(self.input_project_path,
+                                              self.input_image_path,
+                                              self.input_craw_page,
+                                              self.input_time,
+                                              self.input_craw_is,
+                                              self.input_bert_is,
+                                              )
+        self.analysis.start()
+
     def watch_input(self):
-        folder_path = "./output/"+self.barCode
+        folder_path = "./output/" + self.barCode
         QDesktopServices.openUrl(QUrl.fromLocalFile(folder_path))
         self.parameter = self.input_time.text()  # 获取输入框中的文本作为参数
         # self.input_edit.clear()  # 清空输入框
         print(f"Received parameter: {folder_path}")  # 打印接收到的参数到标准输出
+
+    def setup_ui(self):
+
+        self.setWindowTitle("Print Output Example")  # 设置窗口标题
+        self.setGeometry(100, 100, 1000, 600)  # 设置窗口尺寸和位置
+
+        layout = QGridLayout()  # 使用网格布局
+
+        self.input_project_path = QLineEdit("F:\\pythonProject\\Product_Review_Analysis")
+        self.input_project_path.setPlaceholderText("F:\\pythonProject\\Product_Review_Analysis")  # 设置输入框的提示内容
+        layout.addWidget(self.input_project_path)  # 将输入框放置在第二行第一列
+
+        self.input_image_path = QLineEdit("data/images/liushen-6901294179165.jpg")
+        self.input_image_path.setPlaceholderText("data/images/liushen-6901294179165.jpg")  # 设置输入框的提示内容
+        layout.addWidget(self.input_image_path)  # 将输入框放置在第二行第一列
+
+        self.input_craw_page = QLineEdit("5")
+        self.input_craw_page.setPlaceholderText("爬取页数")  # 设置输入框的提示内容
+        layout.addWidget(self.input_craw_page)  # 将输入框放置在第二行第一列
+
+        self.input_time = QLineEdit("3")
+        self.input_time.setPlaceholderText("爬取间隔时间（s）")  # 设置输入框的提示内容
+        layout.addWidget(self.input_time)  # 将输入框放置在第二行第一列
+
+        self.input_craw_is = QLineEdit("2")
+        self.input_craw_is.setPlaceholderText(
+            "爬取信息选项：0:爬取商品信息+评论  1:已有商品信息，只爬取评论  2:不进行数据爬取")  # 设置输入框的提示内容
+        layout.addWidget(self.input_craw_is)  # 将输入框放置在第二行第一列
+
+        self.input_bert_is = QLineEdit("0")
+        self.input_bert_is.setPlaceholderText("模型是否进行训练：1:进行训练  0:不进行训练只检测")  # 设置输入框的提示内容
+        layout.addWidget(self.input_bert_is)  # 将输入框放置在第二行第一列
+
+        self.text_edit = QTextEdit()
+        layout.addWidget(self.text_edit)  # 将文本编辑框放置在第一行，占据1列
+
+        self.button_analysis = QPushButton("开始分析")
+        layout.addWidget(self.button_analysis, 10, 0)  # 将按钮放置在第二行第二列
+
+        self.button_output = QPushButton("查看结果")
+        layout.addWidget(self.button_output, 10, 1)  # 将按钮放置在第二行第二列
+
+        # 将布局设置为主窗口的中央组件
+        central_widget = QWidget()
+        central_widget.setLayout(layout)
+        self.setCentralWidget(central_widget)
+
+        # self.scriptDirectory = "F:\\pythonProject\\Product_Review_Analysis"
+        # self.image_path = "data/images/liushen-6901294179165.jpg"
+        # self.max_page = 5
+        # self.index_page_time = 3
+        # self.option_fun = 2  # 0:爬取商品信息+评论  1:已有商品信息，只爬取评论  2:不进行数据爬取
+        # self.is_train = 0
+        self.barCode = None
 
     # 显示输出到文本编辑框的方法
     def normal_output_written(self, text):
@@ -245,5 +288,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)  # 创建应用程序对象
     window = MainWindow()  # 创建主窗口对象
     window.show()  # 显示主窗口
-    print("123")  # 在标准输出中打印信息
     sys.exit(app.exec_())  # 运行应用程序并进入事件循环
