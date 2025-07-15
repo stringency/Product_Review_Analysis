@@ -6,7 +6,9 @@ import torchvision.transforms as transforms
 from torchvision.models.detection import fasterrcnn_resnet50_fpn, ssdlite320_mobilenet_v3_large
 import os
 
-
+"""
+条形码的检测识别
+"""
 class BarCodeDet:
     # pt模型保存位置
     os.environ['TORCH_HOME'] = 'F:/pythonProject/Product_Review_Analysis/models/'

@@ -8,7 +8,6 @@ import re
 """
 def save_to_csv(products, path, fieldnames):
     """将商品数据保存到 CSV 文件"""
-    # 判断路径是否存在
     isExists = os.path.exists(path)
 
     with open(path, mode='a', newline='', encoding='utf-8') as file:

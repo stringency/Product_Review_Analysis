@@ -4,6 +4,8 @@
 
 [中国商品信息服务平台-中国商品信息服务平台 (gds.org.cn)](https://www.gds.org.cn/#/barcodeList/index?type=barcode&keyword=6972434756270)
 
+[Python小项目：通过商品条形码查询商品信息](https://blog.csdn.net/weixin_46043195/article/details/125794653)
+
 ## 二、淘宝爬取商品评论
 
 [Python爬取淘宝商品评价信息实战_python 获取商品评论-CSDN博客](https://blog.csdn.net/fullbug/article/details/136766498)

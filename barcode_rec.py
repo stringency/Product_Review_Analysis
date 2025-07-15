@@ -1,13 +1,5 @@
 # coding=utf-8
-"""
-开发日志：
 
-:suggest:天猫商品信息搜索有局限性，改用中国商品信息搜索更加强大！
-
-:bug: 获取验证码图片有时候是一直无法保存的形式
-:speculate:
-:solve:
-"""
 import ddddocr
 import requests
 import json
@@ -19,7 +11,16 @@ from PIL import UnidentifiedImageError
 
 from msg_logger.coderec_logger import logger
 
+"""
+条形码信息获取
+开发日志：
 
+:suggest:天猫商品信息搜索有局限性，改用中国商品信息搜索更加强大！
+
+:bug: 获取验证码图片有时候是返回一个重定向链接，导致无法识别
+:speculate:
+:solve:
+"""
 class BarCodeRec:
 
     def __init__(self, shop_id):
@@ -61,7 +62,7 @@ class BarCodeRec:
         # 获取验证码
         img_data = s.get(url + '/index/verify.html?time=', headers=self.headers).content
         time.sleep(2)
-        print(img_data)
+        # print(img_data)
         with open('verification_code.png', 'wb') as v:
             v.write(img_data)
 

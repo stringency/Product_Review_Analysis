@@ -148,6 +148,7 @@ def onnx_test():
     y_pred[y_pred > 0.5] = 1
     y_pred[y_pred <= 0.5] = 0
 
+    print(onnx_model.graph.node)
     print(metrics.classification_report(y_true.cpu(), y_pred.cpu()))
     print("准确率:", metrics.accuracy_score(y_true.cpu(), y_pred.cpu()))
     print("AUC:", metrics.roc_auc_score(y_true.cpu(), y_prob.cpu()))
@@ -157,4 +158,4 @@ def onnx_test():
 下面两个是测试函数
 """
 # test()
-# onnx_test()
+onnx_test()

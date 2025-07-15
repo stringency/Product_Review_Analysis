@@ -18,11 +18,11 @@ from crawlinfo.tb.cominfo import ComInfo
 # if __name__ == '__main__':
 # image_path = "data/images/weib-6972434756270.jpg"
 # 检测图片中的条形码
-image_path = "data/images/liushen-6901294179165.jpg"
+image_path = "data/images/yida-6923450656181.jpg"
 barCodeDetector = BarCodeDet(image_path)
 print("识别结束")
 # 展示识别到的条形码
-# barCodeDetector.show_dispicture()
+barCodeDetector.show_dispicture()
 # 识别获取到的条形码，并且提取商品信息
 barCodeRector = BarCodeRec(barCodeDetector.barCode)
 # 开始识别并且获取信息
@@ -50,10 +50,10 @@ KEYWORD = dict_info['code_name'] + " " + dict_info['code_spec']
 cur_page = 1
 max_page = 5
 index_page_time = 3  # 由于多处用这个时间，爬取一页商品信息大概5-8秒，大概一个商品爬取评论需要10秒
-selenium_tb_tor = ComInfo(barCode=barCode, scriptDirectory=scriptDirectory, KEYWORD=KEYWORD, cur_page=cur_page,
-                          max_page=max_page, index_page_time=index_page_time)
 option_fun = 2  # 0:爬取商品信息+评论  1:已有商品信息，只爬取评论  2:不进行数据爬取
 if option_fun != 2:
+    selenium_tb_tor = ComInfo(barCode=barCode, scriptDirectory=scriptDirectory, KEYWORD=KEYWORD, cur_page=cur_page,
+                          max_page=max_page, index_page_time=index_page_time)
     selenium_tb_tor.selenium_tb(option_fun)
 print("信息获取结束")
 

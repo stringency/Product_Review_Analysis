@@ -1,19 +1,5 @@
 # coding=utf-8
-"""
-开发日志：
-:issue: 登录界面的各种变化，无法实现全自动解放双手
-:issue: 网页版只能查看部分评论，能否通过开发者工具中模拟安卓页面进行爬取
-:issue: 爬取到一定情况下会弹出一个互动验证
 
-:suggest: 这个模块可以封装的更好
-
-:bug: liushen-6901294179165.jpg的爬取中，爬取了48个商品，有三个广告商品
-:speculate:
-:solve:
-:bug: yida-6923450656181.jpg的爬取中，在45个商品数据当中爬取了46个商品，有一个多出来的商品并没存在于网页当中，但是商品信息与目标查商品信息匹配度为百分之30~40
-:speculate:
-:solve:
-"""
 import csv
 import os
 import pathlib
@@ -30,7 +16,21 @@ from selenium.common import TimeoutException
 from urllib.parse import quote
 from pyquery import PyQuery as pq
 
+"""
+开发日志：
+:issue: 登录界面的各种变化，无法实现全自动解放双手
+:issue: 网页版只能查看部分评论，能否通过开发者工具中模拟安卓页面进行爬取
+:issue: 爬取到一定情况下会弹出一个互动验证
 
+:suggest: 这个模块可以封装的更好
+
+:bug: liushen-6901294179165.jpg的爬取中，爬取了48个商品，有三个广告商品
+:speculate:
+:solve:
+:bug: yida-6923450656181.jpg的爬取中，在45个商品数据当中爬取了46个商品，有一个多出来的商品并没存在于网页当中，但是商品信息与目标查商品信息匹配度为百分之30~40
+:speculate:
+:solve:
+"""
 class ComInfo:
     """
     先让Chrome浏览器进入调试状态的终端命令：
@@ -145,8 +145,8 @@ class ComInfo:
             # 清空输入框
             input_login_id.clear()
             input_login_password.clear()
-            input_login_id.send_keys('tb160xxxxxx')  # 用你自己的淘宝账号替换
-            input_login_password.send_keys('gdufe212xxx')  # 用你自己的密码替换
+            input_login_id.send_keys('tb1609644750')  # 用你自己的淘宝账号替换
+            input_login_password.send_keys('gdufe21251106142')  # 用你自己的密码替换
             submit = self.wait.until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, '.fm-button.fm-submit.password-login')))
             submit.click()

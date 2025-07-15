@@ -80,7 +80,7 @@ def commentsAnalysis(scriptDirectory, barCode,
 
     plt.figure(figsize=(5, 5), dpi=180)
     p1 = df_comments['label_emotion'].value_counts()
-    plt.pie(p1, labels=p1.index, autopct="%1.3f%%", shadow=True, explode=(0.2, 0),
+    plt.pie(p1, labels=['好评','差评'], autopct="%1.3f%%", shadow=True, explode=(0.2, 0),
             colors=[randomcolor() for i in range(2)])  # 带阴影，某一块里中心的距离
     plt.title("情感占比")
     plt.savefig(path_save_commentsAnalysis + '\\情感占比.jpg')
@@ -220,7 +220,7 @@ def commentsAnalysis(scriptDirectory, barCode,
     # plt.close()
 
     plt.figure(figsize=(7, 7), dpi=512)
-    graph1_bad = nx.from_pandas_adjacency(kwdata_bad.iloc[:20, 0:20].astype(int))
+    graph1_bad = nx.from_pandas_adjacency(kwdata_bad.iloc[:11, 0:11].astype(int))
     nx.draw(graph1_bad, with_labels=True, node_color='green', font_size=25, edge_color='tomato')
     plt.savefig(path_save_commentsAnalysis + '\\共现网络图-差评.jpg')
     # plt.show()
@@ -381,12 +381,12 @@ def commentsAnalysis(scriptDirectory, barCode,
     # plt.close()
 
 
-# scriptDirectory = "F:\\pythonProject\\Product_Review_Analysis"
-# barCode = "6923450656181"
-# commentsAnalysis(scriptDirectory=scriptDirectory,
-#                  barCode=barCode,
-#                  path_stopwords=scriptDirectory + "\\data\\analysis\\stopwords.txt",
-#                  # 已经分好类的评论
-#                  path_commentsSentiment_onnx=scriptDirectory + "\\output\\" + barCode + "\\commentsSentiment_onnx.csv",
-#                  # 生成文件夹,用于存储数据分析的结果文件
-#                  path_save_commentsAnalysis=scriptDirectory + '\\' + "output" + '\\' + barCode + '\\' + "commentsAnalysis")
+scriptDirectory = "F:\\pythonProject\\Product_Review_Analysis"
+barCode = "6901294179165"
+commentsAnalysis(scriptDirectory=scriptDirectory,
+                 barCode=barCode,
+                 path_stopwords=scriptDirectory + "\\data\\analysis\\stopwords.txt",
+                 # 已经分好类的评论
+                 path_commentsSentiment_onnx=scriptDirectory + "\\output\\" + barCode + "\\commentsSentiment_onnx.csv",
+                 # 生成文件夹,用于存储数据分析的结果文件
+                 path_save_commentsAnalysis=scriptDirectory + '\\' + "output" + '\\' + barCode + '\\' + "commentsAnalysis")
